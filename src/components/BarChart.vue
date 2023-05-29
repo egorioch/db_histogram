@@ -1,9 +1,5 @@
 <template>
-  <Bar
-    id="my-chart-id"
-    :options="chartOptions"
-    :data="chartData"
-  />
+  <Bar id="my-chart-id" :options="chartOptions" :data="chartData" />
 </template>
 
 <script>
@@ -15,23 +11,16 @@ ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
 export default {
   name: 'BarChart',
   components: { Bar },
-  data() {
-    return {
-      chartData: {
-        labels: [ 'January', 'February', 'March', 'April', 'May', 'June' ],
-        datasets: [ 
-        { 
-          label: 'Рабочее время',
-          backgroundColor: '#f87979',
-          data: [423, 20, 12, 42, 22, 12 ] 
-        } 
-        ]
-        
-      },
-      chartOptions: {
-        responsive: true
-      }
+  props: {
+    chartData: {
+      type: Object,
+      default: null
+    },
+    chartOptions: {
+      type: Object,
+      default: null
     }
+
   }
 }
 </script>
