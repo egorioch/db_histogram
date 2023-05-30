@@ -87,6 +87,37 @@ export function getDataFromServer() {
             "absence_reason": "",
             "total_time": "15:48:16"
         }, 
+        //следующее число месяца
+        {
+            "id": "8",
+            "employee_id": "0",
+            "date": "2023-05-15",
+            "clock_in": "08:54:32",
+            "clock_out": "18:54:32",
+            "absence": "01:29:44",
+            "absence_reason": "",
+            "total_time": "6:48:16"
+        }, 
+        {
+            "id": "9",
+            "employee_id": "1",
+            "date": "2023-05-15",
+            "clock_in": "08:54:32",
+            "clock_out": "18:54:32",
+            "absence": "01:29:44",
+            "absence_reason": "",
+            "total_time": "8:48:16"
+        }, 
+        {
+            "id": "10",
+            "employee_id": "2",
+            "date": "2023-05-15",
+            "clock_in": "08:54:32",
+            "clock_out": "18:54:32",
+            "absence": "01:29:44",
+            "absence_reason": "",
+            "total_time": "1:48:16"
+        }, 
     ];
 
     return dataFromDb;
@@ -113,6 +144,7 @@ export function getEmployeesIdArrayFromJson() {
     return employeesIdArray;
 }
 
+//depracated
 export function shortTimeForHistogramTooltip() {
     console.log("getEmployeesIdArrayFromJson: " + getTotalTimeArrayFromJson())
     const employeesTime = getTotalTimeArrayFromJson().map(item => formatTime(item));
