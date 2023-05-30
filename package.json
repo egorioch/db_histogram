@@ -9,9 +9,14 @@
   },
   "dependencies": {
     "chart.js": "^4.3.0",
+    "chartjs-adapter-dayjs-4": "^1.0.4",
+    "chartjs-adapter-moment": "^1.0.1",
     "core-js": "^3.8.3",
+    "dayjs": "^1.11.7",
+    "moment": "^2.29.4",
     "vue": "^3.2.13",
     "vue-chartjs": "^5.2.0",
+    "vue-moment": "^4.1.0",
     "vue-router": "^4.2.2"
   },
   "devDependencies": {

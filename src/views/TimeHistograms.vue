@@ -10,8 +10,9 @@
 
 <script>
 import BarChart from '@/components/BarChart.vue';
-import { getTotalTimeArrayFromJson,
-  getEmployeesIdArrayFromJson,  formatTime
+import {
+  getTotalTimeArrayFromJson,
+  getEmployeesIdArrayFromJson,  /*formatTime,*/
 } from '@/scripts/active_timedata_from server'
 
 export default {
@@ -19,7 +20,7 @@ export default {
     BarChart
   },
   mounted() {
-    console.log(getTotalTimeArrayFromJson());
+    // console.log(moment().format('LTS'));
   },
   data() {
     return {
@@ -44,29 +45,28 @@ export default {
           tooltip: {
             callbacks: {
               label: function (context) {
-                // let label = context.dataset.label;
-                console.log(context);
-                let yValue = 'bruh';
-                console.log("YVALUE: " + yValue)
+                console.log(context)
+                const dataset = context.dataset;
+                console.log(dataset.data[context.dataIndex]);
+                let currentIndexTime = dataset.data[context.dataIndex];
+                
+                return currentIndexTime;
               }
             }
           }
         },
         scales: {
-          x: {
-            type: "time",
-            ticks: {
-              // Настройки меток на оси X
-              stepSize: 1, // Шаг между метками
-              // min: 0, // Минимальное значение на оси X
-              // max: 10, // Максимальное значение на оси X
-              callback: function (value) {
-                // Функция для форматирования меток на оси X
-                console.log("value:" + value)
-                let shortTimeValue = formatTime(value);
-                return shortTimeValue;
-              }
-            }
+          y: {
+            type: 'time', // Установка типа временной шкалы
+            time: {
+              parser: 'HH', // Формат времени
+              // unit: 'hour', // Единица измерения времени (например, 'hour', 'minute')
+              displayFormats: {
+                hour: 'HH', // Формат отображения времени
+              },
+              tooltipFormat: 'HH:mm:ss', // Формат подсказки при наведении
+            },
+
           },
         }
       },

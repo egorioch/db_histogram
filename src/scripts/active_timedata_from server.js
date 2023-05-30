@@ -129,9 +129,10 @@ export function formatTime(full_time) {
 
 
 export function stringToTime(value) {
-    var now = new Date();
-    var nowDateTime = now.toISOString();
-    var nowDate = nowDateTime.split('T')[0];
-    var hms = '01:12:33';
-    var target = new Date(nowDate + 'T' + hms);
+    // const date = new Date(`1970-01-01 ${value}`);
+    let time = value.split(':');
+    let now = new Date();
+    return new Date(now.getFullYear(), now.getMonth(), now.getDate(), ...time);
+    // var nowDate = date.split('T')[1];
+    // return date;
 }
