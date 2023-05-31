@@ -1,10 +1,12 @@
 <template>
   <div class="modal-backdrop">
     <div class="modal">
-      // именнование слотов только для множественного использования самого тега slot
+
       <header class="modal-header">
         <slot name="header">
-          This is the default title!
+          <div class="header-label-class">
+            <p class="header-label"> This is the default title! </p>
+          </div>
         </slot>
         <button type="button" class="btn-close" @click="close">
           x
@@ -19,10 +21,9 @@
 
       <footer class="modal-footer">
         <slot name="footer">
-          This is the default footer!
         </slot>
-        <button type="button" class="btn-green" @click="close">
-          Close Modal
+        <button type="button" class="btn-green-footer-button" @click="footerButton">
+          Send
         </button>
       </footer>
     </div>
@@ -36,72 +37,102 @@ export default {
     close() {
       this.$emit('close');
     },
+    footerButton() {
+      this.$emit('footerButtonClick')
+    }
   },
 };
 </script>
 
-<style>
-  .modal-backdrop {
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background-color: rgba(0, 0, 0, 0.3);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
+<style lang="scss">
+$font: 'Open Sans', sans-serif;
 
-  .modal {
-    background: #FFFFFF;
-    box-shadow: 2px 2px 20px 1px;
-    overflow-x: auto;
-    display: flex;
-    flex-direction: column;
-  }
+.modal-backdrop {
+  font-family: $font;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
-  .modal-header,
-  .modal-footer {
-    padding: 15px;
-    display: flex;
-  }
+.modal {
+  background: #FFFFFF;
+  box-shadow: 2px 2px 20px 1px;
+  overflow-x: auto;
+  display: flex;
+  flex-direction: column;
+  width: 30%;
+}
 
-  .modal-header {
-    position: relative;
-    border-bottom: 1px solid #eeeeee;
-    color: #4AAE9B;
-    justify-content: space-between;
-  }
+.modal-header,
+.modal-footer {
+  padding: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
-  .modal-footer {
-    border-top: 1px solid #eeeeee;
-    flex-direction: column;
-    justify-content: flex-end;
-  }
+.modal-header {
+  position: relative;
+  border-bottom: 1px solid #eeeeee;
+  color: #4AAE9B;
+  justify-content: space-between;
+  font-size: 22px;
+  font-weight: bold;
+}
 
-  .modal-body {
-    position: relative;
-    padding: 20px 10px;
-  }
+.header-label {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: auto 0;
+}
 
-  .btn-close {
-    position: absolute;
-    top: 0;
-    right: 0;
-    border: none;
-    font-size: 20px;
-    padding: 10px;
-    cursor: pointer;
-    font-weight: bold;
-    color: #4AAE9B;
-    background: transparent;
-  }
+.modal-footer {
+  border-top: 1px solid #eeeeee;
+  flex-direction: column;
+  justify-content: flex-end;
+}
 
-  .btn-green {
-    color: white;
-    background: #4AAE9B;
-    border: 1px solid #4AAE9B;
-    border-radius: 2px;
-  }
+.modal-body {
+  position: relative;
+  display: flex;
+  text-align: center;
+  justify-content: center;
+  padding: 10px 10px;
+  /* width: 250px;
+  height: 100px;  */
+  align-items: center;
+  flex-direction: column;
+}
+
+
+.btn-close {
+  position: absolute;
+  top: 0;
+  right: 0;
+  border: none;
+  font-size: 25px;
+  padding: 10px;
+  cursor: pointer;
+  font-weight: bold;
+  color: #4AAE9B;
+  background: transparent;
+}
+
+.btn-green-footer-button {
+  color: white;
+  background: #4AAE9B;
+  border: 1px solid #4AAE9B;
+  border-radius: 2px;
+  font-size: 20px;
+  cursor: pointer;
+}
+
 </style>
