@@ -4,35 +4,39 @@
       Open Modal!
     </button>
 
-    <Modal v-show="isModalVisible" @close="closeModal" @footerButtonClick="sendReason">
-      <template #header>
-        <div>
-          Причина отсутствия
-        </div>
+    <transition name="fade">
 
-      </template>
 
-      <template #body>
-        <div class="reasons-options-layer">
-          <select v-model="selectedReason">
-            <option v-for="option in arrayOfReasons" :value="option">
-
-              {{ option }}
-            </option>
-          </select>
-        </div>
-        <div class="reason-textarea-layer">
-          <div class="reason-textarea-text">
-            <textarea v-model="reasonData" placeholder="описание" />
+      <Modal v-show="isModalVisible" @close="closeModal" @footerButtonClick="sendReason">
+        <template #header>
+          <div>
+            Причина отсутствия
           </div>
-        </div>
-        <div class="validation">
-          <div v-if="v$.reasonData.$error">Введите описание!</div>
-          <div v-if="v$.selectedReason.$error">Введите причину!</div>
-        </div>
-      </template>
 
-    </Modal>
+        </template>
+
+        <template #body>
+          <div class="reasons-options-layer">
+            <select v-model="selectedReason">
+              <option v-for="option in arrayOfReasons" :value="option">
+
+                {{ option }}
+              </option>
+            </select>
+          </div>
+          <div class="reason-textarea-layer">
+            <div class="reason-textarea-text">
+              <textarea v-model="reasonData" placeholder="описание" />
+            </div>
+          </div>
+          <div class="validation">
+            <div v-if="v$.selectedReason.$error">Выберите причину!</div>
+            <div v-if="v$.reasonData.$error">Добавьте описание!</div>
+          </div>
+        </template>
+
+      </Modal>
+    </transition>
   </div>
 </template>
   
@@ -77,6 +81,7 @@ export default {
 
   methods: {
     showModal() {
+      this.reasonData = '';
       this.isModalVisible = true;
     },
     closeModal() {
@@ -85,34 +90,22 @@ export default {
     async sendReason() {
       //to server code
 
-      
-      
       this.arrayOfReasons = await getAbsenceReasons();
       console.log("selectedReason: " + this.selectedReason)
 
       this.v$.$validate() // checks all inputs
-      // const reasonObject = {
+      // const reasonObject = {в
       //   "reason": this.reason,
       //   "reasonData": this.reasonData
       //   
       // }
       // sendEmployeeReasonToServer(reasonObject);
 
-      if (!this.v$.reasonData.$error && !this.v$.selectedReason.$error) {
+      if (!this.v$.selectedReason.$error && !this.v$.reasonData.$error) {
         this.isModalVisible = false;
-        this.reasonData = '';
       }
-      
+
     },
-
-    // checkValidation(currentError) {
-    //   if (!currentError) {
-    //     this.isModalVisible = true;
-    //   } else {
-    //     this.isModalVisible = false;
-    //   }
-    // }
-
 
   }
 };
@@ -121,6 +114,16 @@ export default {
 <style lang="scss" scoped>
 $font: 'Open Sans', sans-serif;
 
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s;
+}
+
+.fade-enter-active {
+  transition: all .3s ease;
+}
+.fade-enter, .fade-leave-to {
+  opacity: 0;
+}
 .reasons-options-layer {
   margin-bottom: 10px;
 }

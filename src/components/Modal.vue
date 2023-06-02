@@ -1,33 +1,35 @@
 <template>
-  <div class="modal-backdrop">
-    <div class="modal">
+  <transition name="fade">
+    <div class="modal-backdrop">
+      <div class="modal">
 
-      <header class="modal-header">
-        <slot name="header">
-          <div class="header-label-class">
-            <p class="header-label"> This is the default title! </p>
-          </div>
-        </slot>
-        <button type="button" class="btn-close" @click="close">
-          x
-        </button>
-      </header>
+        <header class="modal-header">
+          <slot name="header">
+            <div class="header-label-class">
+              <p class="header-label"> This is the default title! </p>
+            </div>
+          </slot>
+          <button type="button" class="btn-close" @click="close">
+            x
+          </button>
+        </header>
 
-      <section class="modal-body">
-        <slot name="body">
-          This is the default body!
-        </slot>
-      </section>
+        <section class="modal-body">
+          <slot name="body">
+            This is the default body!
+          </slot>
+        </section>
 
-      <footer class="modal-footer">
-        <slot name="footer">
-        </slot>
-        <button type="button" class="btn-green-footer-button" @click="footerButton">
-          Send
-        </button>
-      </footer>
+        <footer class="modal-footer">
+          <slot name="footer">
+          </slot>
+          <button type="button" class="btn-green-footer-button" @click="footerButton">
+            Send
+          </button>
+        </footer>
+      </div>
     </div>
-  </div>
+  </transition>
 </template>
 
 <script>
@@ -134,5 +136,4 @@ $font: 'Open Sans', sans-serif;
   font-size: 20px;
   cursor: pointer;
 }
-
 </style>

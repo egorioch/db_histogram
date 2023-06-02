@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import TimeHistogram from '@/views/TimeHistograms.vue'
 import ModalWindowComponent from '@/components/ModalWindowComponent'
 import ParentComponent from '@/components/ParentComponent'
+import AuthorizationView from '@/views/AuthorizationView.vue'
 
 export default createRouter({
   history: createWebHistory(),
@@ -22,6 +23,11 @@ export default createRouter({
       path: "/card",
       name: "ParentComponentForCard",
       component: ParentComponent
+    }, 
+    {
+      path: "/login",
+      name: "AuthorizationView", 
+      component: AuthorizationView
     }
   ]
 });
