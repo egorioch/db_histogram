@@ -2,12 +2,12 @@
   <div>
     <form class="login" @submit.prevent="login">
       <h1>Sign in</h1>
-      
+
       <div class="username-container">
         <label>User name</label>
         <input required v-model="username" type="text" placeholder="Login" />
       </div>
-      
+
       <div class="password-container">
         <label>Password</label>
         <input required v-model="password" type="password" placeholder="Password" />
@@ -19,30 +19,25 @@
   </div>
 </template>
   
-  
 <script>
-import { AUTH_REQUEST } from "@/store/actions/auth";
-
 export default {
-  name: "login",
   data() {
     return {
-      username: "dogo",
-      password: "dogy"
-    };
+      username: '',
+      password: ''
+    }
   },
   methods: {
-    login: function () {
-      const { username, password } = this;
-      // action во vuex возвращает promise
-      this.$store.dispatch(AUTH_REQUEST, { username, password }).then(() => {
-        this.$router.push("/"); // переброс
-      });
+    login() {
+      let username = this.username;
+      let password = this.password;
+      this.$store.dispatch('login', { username, password })
+        .then(() => this.$router.push('/'))
+        .catch(err => console.error("Error with log in: " + err))
     }
   }
-};
+}
 </script>
-
 
 <style>
 .login {
