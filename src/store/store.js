@@ -1,5 +1,11 @@
+/**
+ * vuex.store для управления состоянием.
+ * Состояние изменяется через mutations; Асинхронные запросы к серверу находятся в actions;
+ * функция login(): происходит запрос на сервер. В случае успеха, получаем токен; 
+ */
+
 import { createStore } from "vuex";
-import axios from "axios";
+import axios from "axios"
 
 const store = createStore({
   state: {

@@ -5,6 +5,7 @@ import ParentComponent from '@/components/ParentComponent'
 import AuthorizationView from '@/views/AuthorizationView.vue'
 import NotesTest from '@/components/NotesTest.vue'
 import Secure from '@/components/SecureComponent.vue'
+import PaginationComponent from "@/components/PaginationComponent";
 
 
 const router = createRouter({
@@ -38,7 +39,13 @@ const router = createRouter({
       path: "/notes",
       name: "NotesTest",
       component: NotesTest
+    },
+    {
+      path: "/pagination",
+      name: "PaginationComponent",
+      component: PaginationComponent
     }
+    
   ]
 });
 

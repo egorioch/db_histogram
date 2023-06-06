@@ -12,29 +12,51 @@
       <button class="data-find-button" @click="findData()">Найти</button>
     </div>
     <div class="canvas-chart-class">
-      <bar-chart :chartData="chartData" :chartOptions="options" />
+      <bar-chart :chartData="chartDataComputed" :chartOptions="options" />
     </div>
-    <div class="pagination-row-layer">
-      <PaginationComponent />
+
+    <div class="pagination-layer">
+      <div class="buttons">
+        <button class="back-button" v-if="hasPreviosPage" @click="decrementPage()">Назад</button>
+        <div class="current-page-value">{{ currentPage }}</div>
+        <button class="forward-button" v-if="hasNextPage" @click="incrementPage()">Вперёд</button>
+      </div>
     </div>
+  </div>
+
+  <div>
+    <!-- startIndex: {{ startIndex }}, endIndex: {{ endIndex }} -->
   </div>
 </template>
 
 <script>
 import BarChart from '@/components/BarChart.vue';
-// import PaginationComponent from '@/components/PaginationComponent.vue'
+import PaginationComponent from '@/components/PaginationComponent.vue';
+
 import {
   getTotalTimeArrayFromJson,
-  getEmployeesIdArrayFromJson,
+  // getEmployeesIdArrayFromJson,
   getDataFromServer
 } from '@/scripts/active_timedata_from server'
 
 export default {
   components: {
-    BarChart
+    BarChart,
+    PaginationComponent
   },
   mounted() {
     // console.log(moment().format('LTS'));
+  },
+  created() {
+    // this.chartData.labels = this.getEmployeesIdArrayFromJson().slice(0, 8);
+    this.chartData.datasets = [{
+      label: 'Рабочее время',
+      data: getTotalTimeArrayFromJson(),
+      backgroundColor: "rgba(71, 183,132,.5)",
+      borderColor: "#47b784",
+      borderWidth: 3
+    }]
+    this.chartData.labels = this.labels;
   },
   data() {
     return {
@@ -43,21 +65,14 @@ export default {
 
       startPage: 0,
       endPage: 0,
-      currentPage: 0,
+      currentPage: 1,
+      hasNextPage: true,
+      pagindatedValue: 6,
 
-      chartData: {
-        labels: getEmployeesIdArrayFromJson(),
-        datasets: [
-          {
-            label: 'Рабочее время',
-            data: getTotalTimeArrayFromJson(),
-            backgroundColor: "rgba(71, 183,132,.5)",
-            borderColor: "#47b784",
-            borderWidth: 3
-          },
+      chartData: {},
+      // labels: [],
+      datasets: [],
 
-        ]
-      },
       options: {
         responsive: true,
 
@@ -67,9 +82,9 @@ export default {
           tooltip: {
             callbacks: {
               label: function (context) {
-                console.log(context)
+                // console.log(context)
                 const dataset = context.dataset;
-                console.log(dataset.data[context.dataIndex]);
+                // console.log(dataset.data[context.dataIndex]);
                 let currentIndexTime = dataset.data[context.dataIndex];
 
                 return currentIndexTime;
@@ -116,8 +131,73 @@ export default {
       this.chartData.labels = dataEmployeeIdAccordingWithTime;
 
       this.renderChart(this.chartData, this.options)
+    },
+
+    getEmployeesIdArrayFromJson() {
+      let employeesIdArray = [];
+      this.allData.forEach((element) => {
+        employeesIdArray.push(element.employee_id);
+      });
+
+      return employeesIdArray;
+    },
+
+    decrementPage() {
+      this.currentPage = this.currentPage - 1;
+    },
+    incrementPage() {
+      this.currentPage = this.currentPage + 1;
     }
-  }
+
+  },
+  computed: {
+    startIndex() {
+      console.log("изменение стартового индекса");
+      return (this.currentPage - 1) * this.pagindatedValue
+    },
+    endIndex() {
+      console.log("изменение конечного индекса");
+      const indexCurrentPage = this.currentPage * this.pagindatedValue;
+      const arrayLength = this.getEmployeesIdArrayFromJson().length;
+
+      return this.hasNextPage ? indexCurrentPage : arrayLength;
+    },
+
+    labels() {
+      console.log("labels computed!")
+      const justVal = this.currentPage;
+      return this.getEmployeesIdArrayFromJson().slice(justVal, this.currentPage * 6);
+    },
+
+    hasPreviosPage() {
+      return this.currentPage > 1;
+    },
+    hasNextPage() {
+      const indexCurrentPage = this.currentPage * this.pagindatedValue;
+      const arrayLength = this.getEmployeesIdArrayFromJson().length;
+      console.log("arrayLength: " + arrayLength)
+      console.log("indexCurrentPage: " + indexCurrentPage)
+
+      return indexCurrentPage < arrayLength;
+    },
+
+    chartDataComputed() {
+      const chartData = {};
+
+      chartData.datasets = [{
+        label: 'Рабочее время',
+        data: getTotalTimeArrayFromJson(),
+        backgroundColor: "rgba(71, 183,132,.5)",
+        borderColor: "#47b784",
+        borderWidth: 3
+      }]
+      chartData.labels = this.labels;
+
+
+      return chartData;
+    }
+  },
+
 
 }
 

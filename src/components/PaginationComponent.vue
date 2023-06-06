@@ -1,69 +1,64 @@
-/**
-  Компонент пагинации.
-  Допустимое число элементов - (либо передаваемое с parent-компонента)
-*/
 <template>
-  <div>
-    <ul>
-      <li v-for="element in paginatedData"  :key="element">
-        {{ element.first }}
-        {{ element.last }}
-        {{ element.suffix }}
-      </li>
-    </ul>
-    <button @click="prevPage">
-      Previous
-    </button>
-    <button @click="nextPage">
-      Next
-    </button>
+  <div v-for="element in paginatedArray">
+    {{element}}
+  </div>
+  <div class="pagination-layer">
+    <div class="buttons">
+      <button class="back-button" v-if="currentPage > 0" @click="backButton()">Назад</button>
+      <div class="current-page-value">{{ currentPage }}</div>
+      <button class="forward-button" @click="forwardButton()">Вперёд</button>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
   props: {
-    listData: {
-      type: Array,
-      required: true
-    },
-    //максимальное количество записей
-    size: {
+    rawArray: Array,
+    paginatedValue: {
       type: Number,
-      required: false,
-      default: 8
+      default: 6
     }
   },
   data() {
     return {
-      pageNumber: 0
+      start: 0,
+      end: 0,
+      currentPage: 0,
+      paginatedArray: []
     }
   },
-
-  methods: {
-    nextPage() {
-      this.pageNumber++;
-    },
-    prevPage() {
-      this.pageNumber--;
-    }
-  },
-
   computed: {
-    pageCount() {
-      let l = this.listData.length,
-        s = this.size
 
-      return Math.ceil(l / s);
+  },
+  methods: {
+    backButton() {
+      this.currentPage--;
     },
-    paginatedData() {
-      //получаем стартовую страницу для текущей выборки
-      const start = this.pageNumber * this.size;
-      const end = start + this.size;
+    forwardButton() {
+      this.currentPage++;
+    }
+  },
+  watch: {
+    currentPage() {
+      this.currentPage > 0 ? this.start = this.currentPage * this.paginatedValue : this.start = 0;
+      this.currentPage * 6 > this.paginatedValue ? this.end = this.rawArray.length : this.start = 0;
 
-      return this.listData.slice(start, end);
+      console.log("this.rawArray: " + this.rawArray)
+      this.paginatedArray = this.rawArray.slice(this.start, this.end);
     }
   }
+  
 
 }
 </script>
+
+<style lang="scss" scoped>
+.buttons {
+  display: flex;
+  align-items: flex-end;
+  align-content: flex-end;
+  margin: 2px;
+  padding: auto;
+}
+</style>
