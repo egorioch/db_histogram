@@ -51,7 +51,6 @@ import {
 } from '@/scripts/server'
 
 export default {
-  name: 'App',
   components: {
     Modal,
   },

@@ -8,8 +8,11 @@
 
 <script>
 export default {
+  name: "App",
   computed: {
     isLoggedIn() {
+      console.log("this.$store.getters.isLoggedIn: " + this.$store.getters.isLoggedIn);
+      console.log("this.$store.getters.authStatus: " + this.$store.getters.authStatus);
       return this.$store.getters.isLoggedIn;
     }
   },
