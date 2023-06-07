@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <button type="button" class="btn" @click="showModal">
-      Open Modal!
+      Причина отсутствия
     </button>
 
     <transition name="fade">
@@ -183,5 +183,13 @@ textarea::-webkit-scrollbar-thumb {
 .validation {
   color: red;
   font-size: 18px;
+}
+
+button {
+  background-color: #a1f8d1;
+  border-radius: 5px;
+  border-color: #57cf99;
+  font-family: $font;
+  font-size: 20px;
 }
 </style>

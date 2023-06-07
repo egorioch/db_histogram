@@ -1,4 +1,5 @@
 <template>
+  <nav-bar></nav-bar>
   <div id="app">
     <span v-if="isLoggedIn"><a @click="logout()">Logout</a></span>
   </div>
@@ -7,8 +8,13 @@
 </template>
 
 <script>
+import NavBar from './components/NavBar.vue';
+
 export default {
   name: "App",
+  components: {
+    NavBar
+  },
   computed: {
     isLoggedIn() {
       console.log("this.$store.getters.isLoggedIn: " + this.$store.getters.isLoggedIn);
@@ -26,3 +32,10 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+  body {
+    overflow-x: hidden;
+    overflow-y: hidden;
+  }
+</style>

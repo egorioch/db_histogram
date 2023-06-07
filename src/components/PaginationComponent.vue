@@ -54,6 +54,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+$font: 'Open Sans', sans-serif;
+
 .buttons {
   display: flex;
   align-items: flex-end;
@@ -61,4 +63,6 @@ export default {
   margin: 2px;
   padding: auto;
 }
+
+
 </style>

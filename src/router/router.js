@@ -1,11 +1,14 @@
 import { createRouter, createWebHistory } from 'vue-router'
 // import BarChart from '@/components/BarChart.vue'
 import TimeHistogram from '@/views/TimeHistograms.vue'
-import ParentComponent from '@/components/ParentComponent'
+import AbsenceReason from '@/components/AbsenceReason'
 import AuthorizationView from '@/views/AuthorizationView.vue'
 import NotesTest from '@/components/NotesTest.vue'
 import Secure from '@/components/SecureComponent.vue'
 import PaginationComponent from "@/components/PaginationComponent";
+import MainPage from "@/views/MainPage";
+import HistogramTools from '@/components/HistogramTools'
+import ConcreteEmployeeHist from '@/views/ConcreteEmployeeHist'
 
 
 const router = createRouter({
@@ -27,8 +30,8 @@ const router = createRouter({
     },
     {
       path: "/card",
-      name: "ParentComponentForCard",
-      component: ParentComponent
+      name: "AbsenceReason",
+      component: AbsenceReason
     },
     {
       path: "/login",
@@ -44,6 +47,21 @@ const router = createRouter({
       path: "/pagination",
       name: "PaginationComponent",
       component: PaginationComponent
+    },
+    {
+      path: "/main",
+      name: "MainPage",
+      component: MainPage
+    }, 
+    {
+      path: "/tools",
+      name: "HistogramTools",
+      component: HistogramTools
+    },
+    {
+      path: "/employee",
+      name: "ConcreteEmployeeHist",
+      component: ConcreteEmployeeHist
     }
     
   ]

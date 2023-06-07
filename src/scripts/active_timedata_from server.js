@@ -123,6 +123,8 @@ export function getDataFromServer() {
     return dataFromDb;
 }
 
+
+
 export function getTotalTimeArrayFromJson() {
     let totalTimeArray = [];
     let dirtyJsonArray = getDataFromServer();

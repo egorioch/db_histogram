@@ -5,6 +5,7 @@
 */
 
 <template>
+
   <div class="common-histogram-layer">
     <div class="data-input-layer">
       <label class="label-input-field" for="input-field">Дата: </label>
@@ -24,6 +25,7 @@
     </div>
   </div>
 
+  
   <div>
     <!-- startIndex: {{ startIndex }}, endIndex: {{ endIndex }} -->
   </div>
@@ -96,7 +98,7 @@ export default {
           y: {
             type: 'time', // Установка типа временной шкалы
             time: {
-              parser: 'HH', // Формат времени
+              parser: 'HH', // Формат времениdata-find-button
               unit: 'hour', // Единица измерения времени (например, 'hour', 'minute')
               displayFormats: {
                 hour: 'HH', // Формат отображения времени
@@ -163,15 +165,10 @@ export default {
       return this.hasNextPage ? indexCurrentPage : arrayLength;
     },
 
-    labels() {
-      console.log("labels computed!")
-      const justVal = this.currentPage;
-      return this.getEmployeesIdArrayFromJson().slice(justVal, this.currentPage * 6);
-    },
-
     hasPreviosPage() {
       return this.currentPage > 1;
     },
+
     hasNextPage() {
       const indexCurrentPage = this.currentPage * this.pagindatedValue;
       const arrayLength = this.getEmployeesIdArrayFromJson().length;
@@ -179,6 +176,12 @@ export default {
       console.log("indexCurrentPage: " + indexCurrentPage)
 
       return indexCurrentPage < arrayLength;
+    },
+
+    labels() {
+      console.log("labels computed!")
+      const justVal = this.currentPage;
+      return this.getEmployeesIdArrayFromJson().slice(this.startIndex, this.endIndex);
     },
 
     chartDataComputed() {
@@ -193,7 +196,6 @@ export default {
       }]
       chartData.labels = this.labels;
 
-
       return chartData;
     }
   },
@@ -204,19 +206,19 @@ export default {
 </script>
 
 
-<style lang="scss">
+<style lang="scss" scoped>
 $font: 'Open Sans', sans-serif;
 
 
 .canvas-chart-class {
   width: 800px;
   padding: 10px;
-  margin-top: 10px;
+
 }
 
 .common-histogram-layer {
   width: 100%;
-  height: 50%;
+  height: 60%;
   position: fixed;
   top: 0;
   left: 0;
@@ -227,6 +229,7 @@ $font: 'Open Sans', sans-serif;
   justify-content: center;
   overflow: auto;
   font-family: $font;
+  margin: 30px
 }
 
 .data-find-button {
@@ -246,5 +249,36 @@ $font: 'Open Sans', sans-serif;
   padding: 3px;
   font-size: 20px;
   text-align: center;
+}
+
+
+//пагинация
+.buttons {
+  display: flex;
+  align-items: center;
+  margin: 3px;
+}
+
+.forward-button,
+.back-button {
+  margin: 5px;
+  background-color: #a1f8d1;
+  border-radius: 5px;
+  border-color: #57cf99;
+  font-family: $font;
+  font-size: 18px;
+}
+
+.choose-histogram-layer {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  align-content: center;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: auto auto auto;
+  padding: 10px;
 }
 </style>
