@@ -19,7 +19,7 @@ export function getDataFromServer() {
         }, 
         {
             "id": "1",
-            "employee_id": "12",
+            "employee_id": "1",
             "date": "2023-05-14",
             "clock_in": "08:54:32",
             "clock_out": "18:54:32",
@@ -29,7 +29,7 @@ export function getDataFromServer() {
         }, 
         {
             "id": "2",
-            "employee_id": "14",
+            "employee_id": "2",
             "date": "2023-05-14",
             "clock_in": "06:54:32",
             "clock_out": "18:54:32",
@@ -117,6 +117,16 @@ export function getDataFromServer() {
             "absence": "01:29:44",
             "absence_reason": "",
             "total_time": "1:48:16"
+        }, 
+        {
+            "id": "11",
+            "employee_id": "4",
+            "date": "2023-05-15",
+            "clock_in": "08:54:32",
+            "clock_out": "18:54:32",
+            "absence": "01:29:44",
+            "absence_reason": "",
+            "total_time": "11:48:16"
         }, 
     ];
 

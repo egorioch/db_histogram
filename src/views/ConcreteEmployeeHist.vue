@@ -6,22 +6,42 @@
   <div class="common-layout">
     <histogram-tools>
       <template #header-buttons>
-        <input type="text" class="filter-value" v-model="filterValue" />
+        <input type="text" class="filter-value" v-model="filterValue" @keyup.enter="getEmployeeHoursByEmployeeSNP()" />
         <button class="find-by-filter-button" @click="getEmployeeHoursByEmployeeSNP()">
           Найти
         </button>
       </template>
       <template #hist-section>
+
         <div class="buttons-employees" v-if="surnameNotChoosed" v-for="name in employeesNamesArray">
-          <button>{{ name }}</button>
+          <button @click="chooseName(name)" class="button-employee">{{ name }}</button>
         </div>
+
         <div class="employee-not-found" v-if="employeesNotFound">Совпадений нет</div>
+
+
+        <div class="common-histogram-layer" v-if="histIsVisible">
+          <div class="canvas-chart-class" >
+          <bar-chart :chartData="chartDataComputed" :chartOptions="options" />
+        </div>
+
+        <!-- <div class="pagination-layer">
+            <div class="buttons">
+              <button class="back-button" v-if="hasPreviosPage" @click="decrementPage()">Назад</button>
+                  <div class="current-page-value">{{ currentPage }}</div>
+                  <button class="forward-button" v-if="hasNextPage" @click="incrementPage()">Вперёд</button>
+                </div>
+              </div> -->
+        </div>
+
       </template>
     </histogram-tools>
   </div>
 </template>
 
 <script>
+import dayjs from 'dayjs';
+
 import BarChart from '@/components/BarChart'
 import HistogramTools from '@/components/HistogramTools.vue';
 import { getDataFromServer } from '@/scripts/active_timedata_from server';
@@ -38,15 +58,83 @@ export default {
       rawHoursData: getDataFromServer(),
       rawEmployeeInfoData: getAllEmployeesInfo(),
       filterValue: '',
-      surnameNotChoosed: true,
+
       concurenceEmployees: [],
       employeesNamesArray: [],
-      employeesNotFound: false
+
+      employeesNotFound: false,
+      surnameNotChoosed: true,
+
+      choosedEmployeeName: '',
+      choosedEmployeeId: null,
+
+      //число часов и даты
+      hours: [],
+      dates: [],
+
+      //гистограмма
+      startPage: 0,
+      endPage: 0,
+      currentPage: 1,
+      hasNextPage: true,
+      paginatedValue: 6,
+      histIsVisible: false,
+
+      options: {
+        responsive: true,
+
+        /* график действительно адаптируется под мобильные экраны, но для более точной
+        настройки приходится уточнить количество и точность подписей на осях */
+        // plugins: {
+        //   tooltip: {
+        //     callbacks: {
+        //       label: function (context) {
+        //         // console.log(context)
+        //         const dataset = context.dataset;
+        //         // console.log(dataset.data[context.dataIndex]);
+        //         let currentIndexTime = dataset.data[context.dataIndex];
+
+        //         return currentIndexTime;
+        //       }
+        //     }
+        //   }
+        // },
+        scales: {
+          x: {
+            type: 'time', // Установка типа временной шкалы
+            time: {
+              // parser: 'DD', // Формат времени
+              unit: 'day', // Единица измерения времени (например, 'hour', 'minute')
+              displayFormats: {
+                'day': 'YYYY-MM-DD', // Формат отображения времени
+              },
+              tooltipFormat: 'DD', // Формат подсказки при наведении
+            },
+            ticks: {
+              maxTicks: 6
+            }
+
+          },
+
+          y: {
+            type: 'time', // Установка типа временной шкалы
+            time: {
+              parser: 'HH', // Формат времениdata-find-button
+              unit: 'hour', // Единица измерения времени (например, 'hour', 'minute')
+              displayFormats: {
+                hour: 'HH', // Формат отображения времени
+              },
+              tooltipFormat: 'HH:mm:ss', // Формат подсказки при наведении
+            },
+
+          }
+
+        }
+      },
     }
   },
 
   methods: {
-
 
     //создаем кнопки-имена при множественном совпадению по фильтру
     //метод упростится при перекрёстном запросе на сервере(число часов по employee_id)
@@ -54,13 +142,17 @@ export default {
     //SNP - surname, name, patronymic
     getEmployeeHoursByEmployeeSNP() {
       this.employeesNamesArray = [];
+      this.concurenceEmployees = [];
       this.concurenceEmployees = this.employeeIdByFilterValue();
+      this.concurenceEmployees.length === 0 ?
+        this.employeesNotFound = true : this.employeesNotFound = false;
+
 
       this.concurenceEmployees.forEach((element) => {
         this.employeesNamesArray.push(element.full_name)
       })
 
-      this.filterValue = "";
+
     },
     //возвращаем массив значений совпадающих по фильтру
     employeeIdByFilterValue() {
@@ -77,6 +169,107 @@ export default {
       return concurenceEmployees;
     },
 
+    chooseName(name) {
+      this.filterValue = "";
+      this.histIsVisible = false;
+
+      this.choosedEmployeeName = name;
+      this.getEmployeeIdByName();
+      this.employeesNamesArray = [];
+      this.getEmployeeHoursByDays();
+
+      this.histIsVisible = true;
+    },
+
+    getEmployeeIdByName() {
+      let found = false;
+      let i = 0;
+
+      //перебирать каждый элемент(как это происходит тут) - не надо.
+      //скорое решение
+      while (found === false) {
+        if (this.rawEmployeeInfoData[i].full_name === this.choosedEmployeeName) {
+
+          this.choosedEmployeeId = this.rawEmployeeInfoData[i].id;
+          console.log('name: ' + this.rawEmployeeInfoData[i].full_name + ", id: " + this.choosedEmployeeId)
+          found = true;
+          // break;
+        }
+        i++;
+      }
+    },
+
+    //получение часов и дат(в которые отработаны часы) по конкретному id работника
+    getEmployeeHoursByDays() {
+      this.rawHoursData.forEach((element) => {
+        if (element.employee_id === this.choosedEmployeeId) {
+          this.hours.push(element.total_time);
+          this.dates.push(element.date);
+        }
+      })
+
+      console.log("hours: " + this.hours);
+      console.log("dates: " + this.dates);
+    }
+
+  },
+
+  computed: {
+    // startIndex() {
+    //   console.log("изменение стартового индекса");
+    //   return (this.currentPage - 1) * this.paginatedValue
+    // },
+    // endIndex() {
+    //   console.log("изменение конечного индекса");
+    //   const indexCurrentPage = this.currentPage * this.paginatedValue;
+    //   const arrayLength = this.hours.length;
+
+    //   return this.hasNextPage ? indexCurrentPage : arrayLength;
+    // },
+
+    // hasPreviosPage() {
+    //   return this.currentPage > 1;
+    // },
+
+    // hasNextPage() {
+    //   const indexCurrentPage = this.currentPage * this.paginatedValue;
+    //   const arrayLength = this.hours.length;
+
+    //   return indexCurrentPage < arrayLength;
+    // },
+
+    labels() {
+      console.log('this.dates is changed')
+      return this.dates;
+    },
+
+    changedHours() {
+      console.log('hours is changed:');
+
+      return this.hours;
+    },
+
+    chartDataComputed() {
+      const chartData = {};
+
+      chartData.datasets = [{
+        label: this.choosedEmployeeName,
+        data: this.changedHours,
+        backgroundColor: "rgba(71, 183,132,.5)",
+        borderColor: "#47b784",
+        borderWidth: 3
+      }]
+      chartData.labels = this.labels;
+
+
+      return chartData;
+    }
+  },
+
+  watch: {
+    histIsVisible() {
+
+    }
   }
 
 }
@@ -101,5 +294,16 @@ button {
 
 .employee-not-found {
   font-size: 25px;
+}
+
+.buttons-employees {
+  display: flex;
+  justify-content: center;
+}
+
+.button-employee {
+  margin: 5px;
+  border-color: #96ecc5;
+  background-color: #e3fff2;
 }
 </style>
