@@ -1,37 +1,37 @@
 /**
   snp - surname, name, patronymic
 */
-
 <template>
   <div class="common-layout">
     <histogram-tools>
       <template #header-buttons>
         <input type="text" class="filter-value" v-model="filterValue" @keyup.enter="getEmployeeHoursByEmployeeSNP()" />
-        <button class="find-by-filter-button" @click="getEmployeeHoursByEmployeeSNP()">
+        <button class="find-by-filter-button" @click="getEmployeeHoursByEmployeeSNP(), histIsVisible = false">
           Найти
         </button>
       </template>
-      <template #hist-section>
+      <template #hist-section class="common-layout">
+        <buttons-component ></buttons-component>
 
         <div class="buttons-employees" v-if="surnameNotChoosed" v-for="name in employeesNamesArray">
-          <button @click="chooseName(name)" class="button-employee">{{ name }}</button>
+          <button @click="chooseName(name), histIsVisible = true" class="button-employee">{{ name }}</button>
         </div>
 
         <div class="employee-not-found" v-if="employeesNotFound">Совпадений нет</div>
 
 
         <div class="common-histogram-layer" v-if="histIsVisible">
-          <div class="canvas-chart-class" >
-          <bar-chart :chartData="chartDataComputed" :chartOptions="options" />
-        </div>
+          <div class="canvas-chart-class">
+            <bar-chart :chartData="chartDataComputed" :chartOptions="options" />
+          </div>
 
-        <!-- <div class="pagination-layer">
+          <div class="pagination-layer">
             <div class="buttons">
               <button class="back-button" v-if="hasPreviosPage" @click="decrementPage()">Назад</button>
-                  <div class="current-page-value">{{ currentPage }}</div>
-                  <button class="forward-button" v-if="hasNextPage" @click="incrementPage()">Вперёд</button>
-                </div>
-              </div> -->
+              <div class="current-page-value">{{ currentPage }}</div>
+              <button class="forward-button" v-if="hasNextPage" @click="incrementPage()">Вперёд</button>
+            </div>
+          </div>
         </div>
 
       </template>
@@ -40,10 +40,9 @@
 </template>
 
 <script>
-import dayjs from 'dayjs';
-
 import BarChart from '@/components/BarChart'
 import HistogramTools from '@/components/HistogramTools.vue';
+import ButtonsComponent from '@/components/ButtonsComponent.vue'
 import { getDataFromServer } from '@/scripts/active_timedata_from server';
 import { getAllEmployeesInfo } from "@/scripts/employees_info"
 
@@ -58,6 +57,7 @@ export default {
       rawHoursData: getDataFromServer(),
       rawEmployeeInfoData: getAllEmployeesInfo(),
       filterValue: '',
+      filterAction: '',
 
       concurenceEmployees: [],
       employeesNamesArray: [],
@@ -76,29 +76,30 @@ export default {
       startPage: 0,
       endPage: 0,
       currentPage: 1,
-      hasNextPage: true,
+
+      // hasNextPage: true,
       paginatedValue: 6,
       histIsVisible: false,
+
+      buttonArray: ['fio', 'order', 'role'],
 
       options: {
         responsive: true,
 
         /* график действительно адаптируется под мобильные экраны, но для более точной
         настройки приходится уточнить количество и точность подписей на осях */
-        // plugins: {
-        //   tooltip: {
-        //     callbacks: {
-        //       label: function (context) {
-        //         // console.log(context)
-        //         const dataset = context.dataset;
-        //         // console.log(dataset.data[context.dataIndex]);
-        //         let currentIndexTime = dataset.data[context.dataIndex];
+        plugins: {
+          tooltip: {
+            callbacks: {
+              label: function (context) {
+                const dataset = context.dataset;
+                let currentIndexTime = dataset.data[context.dataIndex];
 
-        //         return currentIndexTime;
-        //       }
-        //     }
-        //   }
-        // },
+                return currentIndexTime;
+              }
+            }
+          }
+        },
         scales: {
           x: {
             type: 'time', // Установка типа временной шкалы
@@ -110,28 +111,26 @@ export default {
               },
               tooltipFormat: 'DD', // Формат подсказки при наведении
             },
-            ticks: {
-              maxTicks: 6
-            }
-
           },
-
           y: {
             type: 'time', // Установка типа временной шкалы
             time: {
-              parser: 'HH', // Формат времениdata-find-button
+              parser: 'HH', // Формат времени
               unit: 'hour', // Единица измерения времени (например, 'hour', 'minute')
               displayFormats: {
                 hour: 'HH', // Формат отображения времени
               },
               tooltipFormat: 'HH:mm:ss', // Формат подсказки при наведении
             },
-
+            min: "00:00:00"
           }
-
         }
       },
     }
+  },
+
+  created() {
+
   },
 
   methods: {
@@ -165,22 +164,20 @@ export default {
         }
       })
 
-      console.log("Отправляемый массив: " + concurenceEmployees)
       return concurenceEmployees;
     },
 
     chooseName(name) {
       this.filterValue = "";
-      this.histIsVisible = false;
 
       this.choosedEmployeeName = name;
       this.getEmployeeIdByName();
       this.employeesNamesArray = [];
       this.getEmployeeHoursByDays();
 
-      this.histIsVisible = true;
     },
 
+    //фильтрация: получение id работника 
     getEmployeeIdByName() {
       let found = false;
       let i = 0;
@@ -191,7 +188,6 @@ export default {
         if (this.rawEmployeeInfoData[i].full_name === this.choosedEmployeeName) {
 
           this.choosedEmployeeId = this.rawEmployeeInfoData[i].id;
-          console.log('name: ' + this.rawEmployeeInfoData[i].full_name + ", id: " + this.choosedEmployeeId)
           found = true;
           // break;
         }
@@ -210,43 +206,51 @@ export default {
 
       console.log("hours: " + this.hours);
       console.log("dates: " + this.dates);
+    },
+
+    //для пагинации
+    decrementPage() {
+      this.employeesSurnames = [];
+      this.currentPage = this.currentPage - 1;
+    },
+    incrementPage() {
+      this.employeesSurnames = [];
+      this.currentPage = this.currentPage + 1;
     }
 
+    //при нажатой кнопки расчёт по дням
   },
 
   computed: {
-    // startIndex() {
-    //   console.log("изменение стартового индекса");
-    //   return (this.currentPage - 1) * this.paginatedValue
-    // },
-    // endIndex() {
-    //   console.log("изменение конечного индекса");
-    //   const indexCurrentPage = this.currentPage * this.paginatedValue;
-    //   const arrayLength = this.hours.length;
+    startIndex() {
+      return (this.currentPage - 1) * this.paginatedValue
+    },
 
-    //   return this.hasNextPage ? indexCurrentPage : arrayLength;
-    // },
+    endIndex() {
+      const indexCurrentPage = this.currentPage * this.paginatedValue;
+      const arrayLength = this.hours.length;
 
-    // hasPreviosPage() {
-    //   return this.currentPage > 1;
-    // },
+      return this.hasNextPage ? indexCurrentPage : arrayLength;
+    },
 
-    // hasNextPage() {
-    //   const indexCurrentPage = this.currentPage * this.paginatedValue;
-    //   const arrayLength = this.hours.length;
+    hasPreviosPage() {
+      return this.currentPage > 1;
+    },
 
-    //   return indexCurrentPage < arrayLength;
-    // },
+    hasNextPage() {
+      const indexCurrentPage = this.currentPage * this.paginatedValue;
+      const arrayLength = this.hours.length;
+
+      return indexCurrentPage < arrayLength;
+    },
 
     labels() {
       console.log('this.dates is changed')
-      return this.dates;
+      return this.dates.slice(this.startIndex, this.endIndex);
     },
 
     changedHours() {
-      console.log('hours is changed:');
-
-      return this.hours;
+      return this.hours.slice(this.startIndex, this.endIndex);
     },
 
     chartDataComputed() {
@@ -261,13 +265,17 @@ export default {
       }]
       chartData.labels = this.labels;
 
-
       return chartData;
     }
   },
 
   watch: {
-    histIsVisible() {
+    histIsVisible(newVal, oldVal) {
+      console.log("newVal: " + newVal + ", hours: " + this.hours + ", dates: " + this.dates);
+      if (newVal === false) {
+        this.dates = [];
+        this.hours = [];
+      }
 
     }
   }
@@ -281,6 +289,10 @@ $font: 'Open Sans', sans-serif;
 .filter-value {
   padding: 5px;
   width: 30%;
+}
+
+.current-page-value {
+  padding: 5px;
 }
 
 button {
@@ -305,5 +317,32 @@ button {
   margin: 5px;
   border-color: #96ecc5;
   background-color: #e3fff2;
+}
+
+.pagination-layer {
+  padding: 10px;
+}
+
+.buttons {
+  display: flex;
+  // align-items: center;
+  justify-content: center;
+  align-content: center;
+  margin: 3px;
+  font-family: $font;
+}
+
+.forward-button,
+.back-button {
+  margin: 5px;
+  background-color: #a1f8d1;
+  border-radius: 5px;
+  border-color: #57cf99;
+  font-family: $font;
+  font-size: 18px;
+}
+
+.canvas-chart-class {
+  margin: 20px;
 }
 </style>

@@ -39,7 +39,7 @@ export function getDataFromServer() {
         }, 
         {
             "id": "3",
-            "employee_id": "18",
+            "employee_id": "3",
             "date": "2023-05-14",
             "clock_in": "08:54:32",
             "clock_out": "18:54:32",
@@ -49,7 +49,7 @@ export function getDataFromServer() {
         }, 
         {
             "id": "4",
-            "employee_id": "13",
+            "employee_id": "4",
             "date": "2023-05-14",
             "clock_in": "08:54:32",
             "clock_out": "18:54:32",
@@ -59,7 +59,7 @@ export function getDataFromServer() {
         }, 
         {
             "id": "5",
-            "employee_id": "3",
+            "employee_id": "5",
             "date": "2023-05-14",
             "clock_in": "08:54:32",
             "clock_out": "18:54:32",
@@ -69,7 +69,7 @@ export function getDataFromServer() {
         }, 
         {
             "id": "6",
-            "employee_id": "5",
+            "employee_id": "6",
             "date": "2023-05-14",
             "clock_in": "08:54:32",
             "clock_out": "18:54:32",
@@ -77,16 +77,7 @@ export function getDataFromServer() {
             "absence_reason": "",
             "total_time": "11:48:16"
         }, 
-        {
-            "id": "7",
-            "employee_id": "6",
-            "date": "2023-05-14",
-            "clock_in": "08:54:32",
-            "clock_out": "18:54:32",
-            "absence": "01:29:44",
-            "absence_reason": "",
-            "total_time": "15:48:16"
-        }, 
+        
         //следующее число месяца
         {
             "id": "8",
@@ -119,14 +110,176 @@ export function getDataFromServer() {
             "total_time": "1:48:16"
         }, 
         {
-            "id": "11",
-            "employee_id": "4",
+            "id": "12",
+            "employee_id": "3",
             "date": "2023-05-15",
             "clock_in": "08:54:32",
             "clock_out": "18:54:32",
             "absence": "01:29:44",
             "absence_reason": "",
             "total_time": "11:48:16"
+        }, 
+        {
+            "id": "13",
+            "employee_id": "4",
+            "date": "2023-05-15",
+            "clock_in": "08:54:32",
+            "clock_out": "18:54:32",
+            "absence": "01:29:44",
+            "absence_reason": "",
+            "total_time": "12:54:16"
+        }, 
+        {
+            "id": "14",
+            "employee_id": "5",
+            "date": "2023-05-15",
+            "clock_in": "08:54:32",
+            "clock_out": "18:54:32",
+            "absence": "01:29:44",
+            "absence_reason": "",
+            "total_time": "06:55:52"
+        }, 
+        {
+            "id": "15",
+            "employee_id": "6",
+            "date": "2023-05-15",
+            "clock_in": "08:54:32",
+            "clock_out": "18:54:32",
+            "absence": "01:29:44",
+            "absence_reason": "",
+            "total_time": "2:43:16"
+        }, 
+        //следующее число
+        {
+            "id": "15",
+            "employee_id": "0",
+            "date": "2023-05-16",
+            "clock_in": "08:54:32",
+            "clock_out": "18:54:32",
+            "absence": "01:29:44",
+            "absence_reason": "",
+            "total_time": "10:31:16"
+        }, 
+        {
+            "id": "16",
+            "employee_id": "1",
+            "date": "2023-05-16",
+            "clock_in": "08:54:32",
+            "clock_out": "18:54:32",
+            "absence": "01:29:44",
+            "absence_reason": "",
+            "total_time": "14:11:16"
+        }, 
+        {
+            "id": "17",
+            "employee_id": "2",
+            "date": "2023-05-16",
+            "clock_in": "08:54:32",
+            "clock_out": "18:54:32",
+            "absence": "01:29:44",
+            "absence_reason": "",
+            "total_time": "7:43:16"
+        }, 
+        {
+            "id": "18",
+            "employee_id": "3",
+            "date": "2023-05-16",
+            "clock_in": "08:54:32",
+            "clock_out": "18:54:32",
+            "absence": "01:29:44",
+            "absence_reason": "",
+            "total_time": "2:43:16"
+        }, 
+        {
+            "id": "19",
+            "employee_id": "4",
+            "date": "2023-05-16",
+            "clock_in": "08:54:32",
+            "clock_out": "18:54:32",
+            "absence": "01:29:44",
+            "absence_reason": "",
+            "total_time": "6:52:16"
+        },  
+        {
+            "id": "20",
+            "employee_id": "5",
+            "date": "2023-05-16",
+            "clock_in": "08:54:32",
+            "clock_out": "18:54:32",
+            "absence": "01:29:44",
+            "absence_reason": "",
+            "total_time": "4:43:16"
+        }, 
+        {
+            "id": "21",
+            "employee_id": "6",
+            "date": "2023-05-16",
+            "clock_in": "08:54:32",
+            "clock_out": "18:54:32",
+            "absence": "01:29:44",
+            "absence_reason": "",
+            "total_time": "9:12:31"
+        }, 
+        //для тестирования пагинации
+        {
+            "id": "22",
+            "employee_id": "0",
+            "date": "2023-05-17",
+            "clock_in": "08:54:32",
+            "clock_out": "18:54:32",
+            "absence": "01:29:44",
+            "absence_reason": "",
+            "total_time": "8:45:11"
+        }, 
+        {
+            "id": "23",
+            "employee_id": "0",
+            "date": "2023-05-18",
+            "clock_in": "08:54:32",
+            "clock_out": "18:54:32",
+            "absence": "01:29:44",
+            "absence_reason": "",
+            "total_time": "5:35:11"
+        }, 
+        {
+            "id": "24",
+            "employee_id": "0",
+            "date": "2023-05-19",
+            "clock_in": "08:54:32",
+            "clock_out": "18:54:32",
+            "absence": "01:29:44",
+            "absence_reason": "",
+            "total_time": "10:45:11"
+        }, 
+        {
+            "id": "25",
+            "employee_id": "0",
+            "date": "2023-05-20",
+            "clock_in": "08:54:32",
+            "clock_out": "18:54:32",
+            "absence": "01:29:44",
+            "absence_reason": "",
+            "total_time": "4:09:15"
+        }, 
+        {
+            "id": "26",
+            "employee_id": "0",
+            "date": "2023-05-21",
+            "clock_in": "08:54:32",
+            "clock_out": "18:54:32",
+            "absence": "01:29:44",
+            "absence_reason": "",
+            "total_time": "11:09:56"
+        }, 
+        {
+            "id": "27",
+            "employee_id": "0",
+            "date": "2023-05-22",
+            "clock_in": "08:12:32",
+            "clock_out": "18:54:32",
+            "absence": "01:29:44",
+            "absence_reason": "",
+            "total_time": "13:17:15"
         }, 
     ];
 

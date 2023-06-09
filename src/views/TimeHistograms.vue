@@ -5,7 +5,6 @@
 */
 
 <template>
-
   <div class="common-histogram-layer">
     <div class="data-input-layer">
       <label class="label-input-field" for="input-field">Дата: </label>
@@ -25,7 +24,7 @@
     </div>
   </div>
 
-  
+
   <div>
     <!-- startIndex: {{ startIndex }}, endIndex: {{ endIndex }} -->
   </div>
@@ -34,10 +33,10 @@
 <script>
 import BarChart from '@/components/BarChart.vue';
 import PaginationComponent from '@/components/PaginationComponent.vue';
+import { getAllEmployeesInfo } from "@/scripts/employees_info";
 
 import {
   getTotalTimeArrayFromJson,
-  // getEmployeesIdArrayFromJson,
   getDataFromServer
 } from '@/scripts/active_timedata_from server'
 
@@ -46,11 +45,12 @@ export default {
     BarChart,
     PaginationComponent
   },
-  mounted() {
-    // console.log(moment().format('LTS'));
+  
+  props: {
+    
   },
+
   created() {
-    // this.chartData.labels = this.getEmployeesIdArrayFromJson().slice(0, 8);
     this.chartData.datasets = [{
       label: 'Рабочее время',
       data: getTotalTimeArrayFromJson(),
@@ -59,11 +59,16 @@ export default {
       borderWidth: 3
     }]
     this.chartData.labels = this.labels;
+
+    this.getEmployeesIdArrayFromJson();
   },
   data() {
     return {
       findDateText: '',
       allData: getDataFromServer(),
+      employeesIdArray: [],
+      rawEmployeeData: getAllEmployeesInfo(),
+      employeesSurnames: [],
 
       startPage: 0,
       endPage: 0,
@@ -78,8 +83,6 @@ export default {
       options: {
         responsive: true,
 
-        /* график действительно адаптируется под мобильные экраны, но для более точной
-        настройки приходится уточнить количество и точность подписей на осях */
         plugins: {
           tooltip: {
             callbacks: {
@@ -98,14 +101,15 @@ export default {
           y: {
             type: 'time', // Установка типа временной шкалы
             time: {
-              parser: 'HH', // Формат времениdata-find-button
+              parser: 'HH', // Формат времени
               unit: 'hour', // Единица измерения времени (например, 'hour', 'minute')
               displayFormats: {
                 hour: 'HH', // Формат отображения времени
               },
               tooltipFormat: 'HH:mm:ss', // Формат подсказки при наведении
             },
-
+            // max: "14:00:00" //тут нужно по максимальному значению времени из массива рассчитать
+            min: "00:00:00"
           }
         }
       },
@@ -132,35 +136,44 @@ export default {
       console.log("this.chartData.datasets.data: " + this.chartData.datasets.data);
       this.chartData.labels = dataEmployeeIdAccordingWithTime;
 
-      this.renderChart(this.chartData, this.options)
+      // this.renderChart(this.chartData, this.options)
     },
 
     getEmployeesIdArrayFromJson() {
-      let employeesIdArray = [];
       this.allData.forEach((element) => {
-        employeesIdArray.push(element.employee_id);
+        this.employeesIdArray.push(element.employee_id);
       });
 
-      return employeesIdArray;
+      console.log("EMPLOYEEidArray: " + this.employeesIdArray)
+    },
+
+    matchSurnameToEmployeeId() {
+      this.employeesIdArray.forEach((element) => {
+        this.employeesSurnames.push(this.rawEmployeeData[element].full_name)
+      })
+
+      console.log("массив имен: " + this.employeesSurnames);
     },
 
     decrementPage() {
+      this.employeesSurnames = [];
       this.currentPage = this.currentPage - 1;
     },
     incrementPage() {
+      this.employeesSurnames = [];
       this.currentPage = this.currentPage + 1;
     }
 
   },
+
   computed: {
     startIndex() {
-      console.log("изменение стартового индекса");
       return (this.currentPage - 1) * this.pagindatedValue
     },
+
     endIndex() {
-      console.log("изменение конечного индекса");
       const indexCurrentPage = this.currentPage * this.pagindatedValue;
-      const arrayLength = this.getEmployeesIdArrayFromJson().length;
+      const arrayLength = this.employeesIdArray.length;
 
       return this.hasNextPage ? indexCurrentPage : arrayLength;
     },
@@ -171,17 +184,14 @@ export default {
 
     hasNextPage() {
       const indexCurrentPage = this.currentPage * this.pagindatedValue;
-      const arrayLength = this.getEmployeesIdArrayFromJson().length;
-      console.log("arrayLength: " + arrayLength)
-      console.log("indexCurrentPage: " + indexCurrentPage)
+      const arrayLength = this.employeesIdArray.length;
 
       return indexCurrentPage < arrayLength;
     },
 
     labels() {
-      console.log("labels computed!")
-      const justVal = this.currentPage;
-      return this.getEmployeesIdArrayFromJson().slice(this.startIndex, this.endIndex);
+      this.matchSurnameToEmployeeId();
+      return this.employeesSurnames.slice(this.startIndex, this.endIndex);
     },
 
     chartDataComputed() {
@@ -189,7 +199,7 @@ export default {
 
       chartData.datasets = [{
         label: 'Рабочее время',
-        data: getTotalTimeArrayFromJson(),
+        data: getTotalTimeArrayFromJson().slice(this.startIndex, this.endIndex),
         backgroundColor: "rgba(71, 183,132,.5)",
         borderColor: "#47b784",
         borderWidth: 3
@@ -213,7 +223,6 @@ $font: 'Open Sans', sans-serif;
 .canvas-chart-class {
   width: 800px;
   padding: 10px;
-
 }
 
 .common-histogram-layer {
